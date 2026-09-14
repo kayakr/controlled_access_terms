@@ -2,7 +2,6 @@
 
 namespace Drupal\controlled_access_terms\Plugin\Field\FieldFormatter;
 
-use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceLabelFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 
 /**
@@ -16,7 +15,7 @@ use Drupal\Core\Field\FieldItemListInterface;
  *   }
  * )
  */
-class TypedRelationFormatterRaw extends EntityReferenceLabelFormatter {
+class TypedRelationFormatterRaw extends TypedRelationFormatter {
 
   /**
    * {@inheritdoc}
@@ -24,8 +23,10 @@ class TypedRelationFormatterRaw extends EntityReferenceLabelFormatter {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = parent::viewElements($items, $langcode);
 
-    foreach ($items as $delta => $item) {
-      $elements[$delta]['#plain_text'] = $item->rel_type . '=' . $item->target_id;
+    foreach ($elements as $delta => &$element) {
+      $item = $items[$delta];
+      unset($element['#prefix']);
+      $element['#plain_text'] = $item->rel_type . '=' . $item->target_id;
     }
 
     return $elements;
